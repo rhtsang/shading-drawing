@@ -6,8 +6,8 @@
 
 using namespace std;
 
-void readFile(char* fileName, vector<Polygon>& polygons);
-void writeFile(char* fileName, vector<Polygon>& polygons);
+void readPolygons(char* fileName, vector<Polygon>& polygons);
+void writePolygons(char* fileName, vector<Polygon>& polygons);
 
 
 #endif

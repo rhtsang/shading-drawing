@@ -11,6 +11,7 @@ public:
     float x;
     float y;
     float z;
+    vector<int> adjacentVertices;
 
     Coordinate(float x1, float y1, float z1);
 

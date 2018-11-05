@@ -9,7 +9,7 @@
 
 using namespace std;
 
-void readFile(char* fileName, vector<Polygon>& polygons) {
+void readPolygons(char* fileName, vector<Polygon>& polygons) {
 
     ifstream inputFile(fileName);
     string line;
@@ -73,6 +73,10 @@ void readFile(char* fileName, vector<Polygon>& polygons) {
             // Store current polygon's vertices info in a vector
             Edge edge(int_from, int_to);
             edges.push_back(edge);
+
+            coordinates.at(int_from-1).adjacentVertices.push_back(int_to-1);
+            coordinates.at(int_to-1).adjacentVertices.push_back(int_from-1);
+            
         }
 
         // Store current polygon's info in a vector
@@ -85,7 +89,7 @@ void readFile(char* fileName, vector<Polygon>& polygons) {
 
 }
 
-void writeFile(char* fileName, vector<Polygon>& polygons) {
+void writePolygons(char* fileName, vector<Polygon>& polygons) {
 
     ofstream outputFile(fileName);
 
