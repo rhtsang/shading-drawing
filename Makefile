@@ -14,3 +14,6 @@ polygon.o: polygon.cpp polygon.h
 
 phong.o: phong.cpp phong.h
 	g++ -c phong.cpp
+
+pixel.o : pixel.cpp pixel.h
+	g++ -c pixel.cpp

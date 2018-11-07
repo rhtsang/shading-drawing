@@ -3,6 +3,6 @@
 
 #include "polygon.h"
 
-void setPixel(float* PixelBuffer, Coordinate point, Coordinate viewport);
+void setPixel(float* PixelBuffer, Coordinate point, Coordinate viewport, float intensity);
 
 #endif
