@@ -12,6 +12,7 @@ public:
     float y;
     float z;
     vector<int> adjacentVertices;
+    double intensity;
 
     Coordinate(float x1, float y1, float z1);
 

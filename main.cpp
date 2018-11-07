@@ -7,6 +7,7 @@
 #include "line.h"
 #include "rasterize.h"
 #include "phong.h"
+#include "rasterize.h"
 
 float *PixelBuffer;
 int width, height;
@@ -24,7 +25,7 @@ int main(int argc, char *argv[])
     // cin >> height;
     width = height = 200;
 	PixelBuffer = new float[width * height * 3];
-
+    Coordinate viewport(width, height, 0);
     // transformation prompt
 
     vector<Polygon> polygons;
@@ -39,8 +40,8 @@ int main(int argc, char *argv[])
     //     }
     // }
 
-    Coordinate lightSource(50,50,50);
-    Coordinate viewPoint(100,100,100);
+    Coordinate lightSource(500,500,500);
+    Coordinate viewPoint(200,200,200);
     double k = averageDistanceFromLightSource(polygons, lightSource);
 cout << "Average distance: " << k << endl;
     vector<double> intensities = phongIntensity(polygons.at(0), 4, 0.5, 0.25, 0.75, 5, 9,
@@ -50,9 +51,17 @@ cout << "Average distance: " << k << endl;
     //     cout << *itr << endl;
     // }
 
-    writePolygons(argv[2], polygons);
+    // for (int i = 0; i < polygons.at(0).vertices.size(); i++) {
+    //     if (i == polygons.at(0).vertices.size() - 1) {
+    //         dda(PixelBuffer, polygons.at(0).vertices.at(i), polygons.at(0).vertices.at(0), viewport);
+    //     } else {
+    //         dda(PixelBuffer, polygons.at(0).vertices.at(i), polygons.at(0).vertices.at(i+1), viewport);
+    //     }
+    // }
 
-    Coordinate viewport(width, height, 0);
+    rasterize(PixelBuffer, polygons, viewport);
+
+    writePolygons(argv[2], polygons);
 
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_SINGLE);

@@ -35,7 +35,7 @@ double averageDistanceFromLightSource(vector<Polygon> polygons, Coordinate light
     return totalDistance;
 }
 
-vector<double> phongIntensity(Polygon polygon, int phongConstant, double ambient, double diffuse, double specular, double ambientIntensity, double sourceIntensity, Coordinate lightSource, Coordinate from, double averageDistance) {
+vector<double> phongIntensity(Polygon& polygon, int phongConstant, double ambient, double diffuse, double specular, double ambientIntensity, double sourceIntensity, Coordinate lightSource, Coordinate from, double averageDistance) {
 
     vector<double> intensities;
     vector<Coordinate> vertices = polygon.vertices;
@@ -128,9 +128,13 @@ label:
     }
     double delta = max-min;
 
+    int i = 0;
     for (vector<double>::iterator itr = intensities.begin(); itr != intensities.end(); itr++) {
         *itr = (*itr-min)/delta;
-        cout << "Intensity: " << *itr << endl;
+        polygon.vertices.at(i).intensity = *itr;
+cout << "Intensity: " << *itr << endl;
+//cout << polygon.vertices.at(i).intensity << endl;
+        i++;
     }
 
     return intensities;

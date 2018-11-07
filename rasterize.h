@@ -6,6 +6,6 @@
 
 using namespace std;
 
-void rasterize(float* PixelBuffer, vector<Polygon> polygons, Coordinate viewport, char lineMode);
+void rasterize(float* PixelBuffer, vector<Polygon> polygons, Coordinate viewport);
 
 #endif

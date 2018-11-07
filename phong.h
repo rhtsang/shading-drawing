@@ -10,6 +10,6 @@ Coordinate findCentroid(Polygon polygon);
 
 double averageDistanceFromLightSource(vector<Polygon> polygon, Coordinate lightSource);
 
-vector<double> phongIntensity(Polygon polygon, int phongConstant, double ambient, double diffuse, double specular, double ambientIntensity, double sourceIntensity, Coordinate lightSource, Coordinate from, double averageDistance);
+vector<double> phongIntensity(Polygon& polygon, int phongConstant, double ambient, double diffuse, double specular, double ambientIntensity, double sourceIntensity, Coordinate lightSource, Coordinate from, double averageDistance);
 
 #endif
