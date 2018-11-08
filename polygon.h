@@ -11,20 +11,20 @@ public:
     float x;
     float y;
     float z;
-    vector<int> adjacentVertices;
     double intensity;
 
     Coordinate(float x1, float y1, float z1);
 
 };
 
-class Edge {
+class Triangle {
 public:
 
-    int from;
-    int to;
+    int v1;
+    int v2;
+    int v3;
 
-    Edge(int from1, int to1);
+    Triangle(int a, int b, int c);
 
 };
 
@@ -33,10 +33,10 @@ public:
 
     int numVertices;
     vector<Coordinate> vertices;
-    int numEdges;
-    vector<Edge> edges;
+    int numTriangleFaces;
+    vector<Triangle> triangleFaces;
 
-    Polygon(int numVerts, vector<Coordinate> verts, int numEds, vector<Edge> eds);
+    Polygon(int numVerts, vector<Coordinate> verts, int numTris, vector<Triangle> triFaces);
 
 };
 

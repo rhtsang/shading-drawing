@@ -40,6 +40,7 @@ vector<double> phongIntensity(Polygon& polygon, int phongConstant, double ambien
     vector<double> intensities;
     vector<Coordinate> vertices = polygon.vertices;
 
+    // for each vertex, calculate stuff
     for (int i = 0; i < vertices.size(); i++) {
         // calculate view vector
         double viewVectorX = from.x - vertices.at(i).x;
@@ -59,42 +60,47 @@ vector<double> phongIntensity(Polygon& polygon, int phongConstant, double ambien
         lightVectorY /= lightVectorMagnitude;
         lightVectorZ /= lightVectorMagnitude;
 //cout << "Light vector" << lightVectorX << ' ' << lightVectorY << ' ' << lightVectorZ << endl;
+
         // calc normal vector
-        Coordinate* p1 = NULL;
-        Coordinate* p2 = NULL;
+
         double sumNormalX = 0;
         double sumNormalY = 0;
         double sumNormalZ = 0;
-        for (vector<int>::iterator itr = vertices.at(i).adjacentVertices.begin(); itr != vertices.at(i).adjacentVertices.end(); itr++) {
-            p1 = &(vertices.at(*itr));
-            for (vector<int>::iterator itr2 = (p1->adjacentVertices).begin(); itr2 != (p1->adjacentVertices).end(); itr2++) {
-                for (vector<int>::iterator itr3 = vertices.at(*itr2).adjacentVertices.begin(); itr3 != vertices.at(*itr2).adjacentVertices.end(); itr3++) {
-                    if (i == *itr3) {
-                        p2 = &(vertices.at(*itr2));
-                        goto label;
-                        //break;
-                    }
-                }
-                //break;
+        int numFaces = 0;
+        // iterate through faces to calculate average normal vector
+        for (vector<Triangle>::iterator itr = polygon.triangleFaces.begin(); itr != polygon.triangleFaces.end(); itr++) {
+            Coordinate* p1 = NULL;
+            Coordinate* p2 = NULL;
+            if (i == itr->v1) {
+                p1 = &(vertices.at(itr->v2));
+                p2 = &(vertices.at(itr->v3));
+            } else if (i == itr->v2) {
+                p1 = &(vertices.at(itr->v1));
+                p2 = &(vertices.at(itr->v3));
+            } else if (i == itr->v3) {
+                p1 = &(vertices.at(itr->v2));
+                p2 = &(vertices.at(itr->v1));
             }
-label:
 //cout << "Current point: " << vertices.at(i).x << ' ' << vertices.at(i).y << ' ' << vertices.at(i).z << endl;
 //cout << "First point: " << p1->x << ' ' << p1->y << ' ' << p1->z << endl;
 //cout << "Second point: " << p2->x << ' ' << p2->y << ' ' << p2->z << endl;
-            Coordinate d1(p1->x - vertices.at(i).x, p1->y - vertices.at(i).y, p1->z - vertices.at(i).z);
-            Coordinate d2(p2->x - vertices.at(i).x, p2->y - vertices.at(i).y, p2->z - vertices.at(i).z);
-            double normalX = ((d1.y)*(d2.z)) - ((d1.z)*(d2.y));
-            double normalY = -1 * ((d1.x)*(d2.z)) - ((d1.z)*(d2.x));
-            double normalZ = ((d1.x)*(d2.y)) - ((d1.y)*(d2.x));
+            if (p1 && p2) {
+                numFaces++;
+                Coordinate d1(p1->x - vertices.at(i).x, p1->y - vertices.at(i).y, p1->z - vertices.at(i).z);
+                Coordinate d2(p2->x - vertices.at(i).x, p2->y - vertices.at(i).y, p2->z - vertices.at(i).z);
+                double normalX = ((d1.y)*(d2.z)) - ((d1.z)*(d2.y));
+                double normalY = -1 * ((d1.x)*(d2.z)) - ((d1.z)*(d2.x));
+                double normalZ = ((d1.x)*(d2.y)) - ((d1.y)*(d2.x));
 //cout << "Normal vector: " << normalX << ' ' << normalY << ' ' << normalZ << endl;
-            sumNormalX += normalX;
-            sumNormalY += normalY;
-            sumNormalZ += normalZ;
+                sumNormalX += normalX;
+                sumNormalY += normalY;
+                sumNormalZ += normalZ;
+            }
 //cout << "after label: " << sumNormalX << ' ' << sumNormalY << ' ' << sumNormalZ << endl;
         }
-        sumNormalX /= vertices.at(i).adjacentVertices.size() - 1;
-        sumNormalY /= vertices.at(i).adjacentVertices.size() - 1;
-        sumNormalZ /= vertices.at(i).adjacentVertices.size() - 1;
+        sumNormalX /= numFaces;
+        sumNormalY /= numFaces;
+        sumNormalZ /= numFaces;
         double denominator = sqrt(pow(sumNormalX,2) + pow(sumNormalY,2) + pow(sumNormalZ,2));
 //cout << "Denominator " << denominator << endl;
         sumNormalX /= denominator;

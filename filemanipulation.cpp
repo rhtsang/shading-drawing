@@ -55,32 +55,31 @@ void readPolygons(char* fileName, vector<Polygon>& polygons) {
         }
 
         // Get edges of current polygon
-        int numEdges;
-        inputFile >> numEdges;
+        int numTriangleFaces;
+        inputFile >> numTriangleFaces;
         getline(inputFile, line);
 
-        vector<Edge> edges;
-        for (int j = 0; j < numEdges; j++) {
-            int int_from, int_to;
-            string string_from, string_to;
+        vector<Triangle> triangleFaces;
+        for (int j = 0; j < numTriangleFaces; j++) {
+            int int_v1, int_v2, int_v3;
+            string string_v1, string_v2, string_v3;
             getline(inputFile, line);
-            istringstream coordinate(line);
-            getline(coordinate, string_from, ' ');
-            getline(coordinate, string_to);
-            int_from = stoi(string_from);
-            int_to = stoi(string_to);
+            istringstream face(line);
+            getline(face, string_v1, ' ');
+            getline(face, string_v2, ' ');
+            getline(face, string_v3);
+            int_v1 = stoi(string_v1);
+            int_v2 = stoi(string_v2);
+            int_v3 = stoi(string_v3);
 
             // Store current polygon's vertices info in a vector
-            Edge edge(int_from, int_to);
-            edges.push_back(edge);
+            Triangle triangle(int_v1, int_v2, int_v3);
+            triangleFaces.push_back(triangle);
 
-            coordinates.at(int_from-1).adjacentVertices.push_back(int_to-1);
-            coordinates.at(int_to-1).adjacentVertices.push_back(int_from-1);
-            
         }
 
         // Store current polygon's info in a vector
-        Polygon polygon(numVertices, coordinates, numEdges, edges);
+        Polygon polygon(numVertices, coordinates, numTriangleFaces, triangleFaces);
         polygons.push_back(polygon);
 
         // go to next Polygon
@@ -105,9 +104,9 @@ void writePolygons(char* fileName, vector<Polygon>& polygons) {
         }
 
         // write edges int_from
-        outputFile << itr->numEdges << endl;
-        for (vector<Edge>::iterator itr2 = (itr->edges).begin(); itr2 != (itr->edges).end(); itr2++) {
-            outputFile << itr2->from << ' ' << itr2->to << endl;
+        outputFile << itr->numTriangleFaces << endl;
+        for (vector<Triangle>::iterator itr2 = (itr->triangleFaces).begin(); itr2 != (itr->triangleFaces).end(); itr2++) {
+            outputFile << itr2->v1 << ' ' << itr2->v2 << ' ' << itr2->v3 << endl;
         }
     }
 

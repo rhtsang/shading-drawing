@@ -18,8 +18,10 @@ void rasterize(float* PixelBuffer, vector<Polygon> polygons, Coordinate viewport
         // intermediate buffer to draw single polygon at a time
         float* DrawBuffer = new float[int(viewport.x) * int(viewport.y) * 3];
 
-        for (vector<Edge>::iterator itr2 = (itr->edges).begin(); itr2 != (itr->edges).end(); itr2++) {
-            dda(DrawBuffer, (itr->vertices).at(itr2->from - 1), (itr->vertices).at(itr2->to - 1), viewport);
+        for (vector<Triangle>::iterator itr2 = (itr->triangleFaces).begin(); itr2 != (itr->triangleFaces).end(); itr2++) {
+            dda(DrawBuffer, (itr->vertices).at(itr2->v1), (itr->vertices).at(itr2->v2), viewport);
+            dda(DrawBuffer, (itr->vertices).at(itr2->v2), (itr->vertices).at(itr2->v3), viewport);
+            dda(DrawBuffer, (itr->vertices).at(itr2->v3), (itr->vertices).at(itr2->v1), viewport);
         }
 
         // fill in current polygon

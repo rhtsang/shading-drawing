@@ -10,14 +10,15 @@ Coordinate::Coordinate(float x1, float y1, float z1) {
     z = z1;
 }
 
-Edge::Edge(int from1, int to1) {
-    from = from1;
-    to = to1;
+Triangle::Triangle(int a, int b, int c) {
+    v1 = a;
+    v2 = b;
+    v3 = c;
 }
 
-Polygon::Polygon(int numVerts, vector<Coordinate> verts, int numEds, vector<Edge> eds) {
+Polygon::Polygon(int numVerts, vector<Coordinate> verts, int numTris, vector<Triangle> triFaces) {
     numVertices = numVerts;
     vertices = verts;
-    numEdges = numEds;
-    edges = eds;
+    numTriangleFaces = numTris;
+    triangleFaces = triFaces;
 }
