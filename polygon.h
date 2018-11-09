@@ -13,6 +13,7 @@ public:
     float z;
     double intensity;
 
+    Coordinate();
     Coordinate(float x1, float y1, float z1);
 
 };

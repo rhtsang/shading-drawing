@@ -4,6 +4,10 @@
 
 using namespace std;
 
+Coordinate::Coordinate() {
+    x = y = z = 0;
+}
+
 Coordinate::Coordinate(float x1, float y1, float z1) {
     x = x1;
     y = y1;

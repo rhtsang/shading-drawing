@@ -43,23 +43,12 @@ int main(int argc, char *argv[])
     Coordinate lightSource(500,500,500);
     Coordinate viewPoint(200,200,200);
     double k = averageDistanceFromLightSource(polygons, lightSource);
-cout << "Average distance: " << k << endl;
-    vector<double> intensities = phongIntensity(polygons.at(0), 4, 0.5, 0.25, 0.75, 5, 9,
+//cout << "Average distance: " << k << endl;
+    for (vector<Polygon>::iterator itr = polygons.begin(); itr != polygons.end(); itr++) {
+        vector<double> intensities = phongIntensity(*itr, 4, 0.5, 0.25, 0.75, 5, 9,
                                 lightSource, viewPoint, k);
-
-    // for (vector<float>::iterator itr = intensities.begin(); itr != intensities.end(); itr++) {
-    //     cout << *itr << endl;
-    // }
-
-    // for (int i = 0; i < polygons.at(0).vertices.size(); i++) {
-    //     if (i == polygons.at(0).vertices.size() - 1) {
-    //         dda(PixelBuffer, polygons.at(0).vertices.at(i), polygons.at(0).vertices.at(0), viewport);
-    //     } else {
-    //         dda(PixelBuffer, polygons.at(0).vertices.at(i), polygons.at(0).vertices.at(i+1), viewport);
-    //     }
-    // }
-
-    rasterize(PixelBuffer, polygons, viewport);
+    }
+    rasterize(PixelBuffer, polygons, viewport, 1);
 
     writePolygons(argv[2], polygons);
 
