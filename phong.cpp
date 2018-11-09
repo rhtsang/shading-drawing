@@ -138,7 +138,7 @@ vector<double> phongIntensity(Polygon& polygon, int phongConstant, double ambien
     for (vector<double>::iterator itr = intensities.begin(); itr != intensities.end(); itr++) {
         *itr = (*itr-min)/delta;
         polygon.vertices.at(i).intensity = *itr;
-cout << "Intensity: " << *itr << endl;
+//cout << "Intensity: " << *itr << endl;
 //cout << polygon.vertices.at(i).intensity << endl;
         i++;
     }
