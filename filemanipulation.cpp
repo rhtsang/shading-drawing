@@ -111,3 +111,51 @@ void writePolygons(char* fileName, vector<Polygon>& polygons) {
     }
 
 }
+
+void readEnvironment(char* fileName, int& phongConstant, double& ambient, double& diffuse, double& specular, double& ambientIntensity, double& sourceIntensity, float& lightSourceX, float& lightSourceY, float& lightSourceZ, float& fromX, float& fromY, float& fromZ) {
+
+    ifstream inputFile(fileName);
+    string line;
+
+    getline(inputFile, line);
+    phongConstant = stoi(line);
+
+    getline(inputFile, line);
+    istringstream coefficients(line);
+    string string_ambient, string_diffuse, string_specular;
+    getline(coefficients, string_ambient, ' ');
+    getline(coefficients, string_diffuse, ' ');
+    getline(coefficients, string_specular);
+    ambient = stod(string_ambient);
+    diffuse = stod(string_diffuse);
+    specular = stod(string_specular);
+
+    getline(inputFile, line);
+    istringstream intensities(line);
+    string string_source, string_ambientI;
+    getline(intensities, string_source, ' ');
+    getline(intensities, string_ambientI);
+    sourceIntensity = stod(string_source);
+    ambientIntensity = stod(string_ambientI);
+
+    getline(inputFile, line);
+    istringstream lightSource(line);
+    string sourceX, sourceY, sourceZ;
+    getline(lightSource, sourceX, ' ');
+    getline(lightSource, sourceY, ' ');
+    getline(lightSource, sourceZ);
+    lightSourceX = stof(sourceX);
+    lightSourceY = stof(sourceY);
+    lightSourceZ = stof(sourceZ);
+
+    getline(inputFile, line);
+    istringstream from(line);
+    string string_fromX, string_fromY, string_fromZ;
+    getline(from, string_fromX, ' ');
+    getline(from, string_fromY, ' ');
+    getline(from, string_fromZ);
+    fromX = stof(string_fromX);
+    fromY = stof(string_fromY);
+    fromZ = stof(string_fromZ);
+
+}

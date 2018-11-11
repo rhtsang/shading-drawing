@@ -31,17 +31,14 @@ int main(int argc, char *argv[])
     vector<Polygon> polygons;
 	readPolygons(argv[1], polygons);
 
-    // for (vector<Polygon>::iterator itr = polygons.begin(); itr!= polygons.end(); itr++) {
-    //     for (vector<Coordinate>::iterator itr2 = (itr->vertices).begin(); itr2 != (itr->vertices).end(); itr2++) {
-    //         for (vector<int>::iterator itr3 = (itr2->adjacentVertices).begin(); itr3 != (itr2->adjacentVertices).end(); itr3++) {
-    //             cout << *itr3 << ' ';
-    //         }
-    //         cout << endl;
-    //     }
-    // }
+    int phongConstant;
+    double ambient, diffuse, specular, ambientIntensity, sourceIntensity;
+    float lightSourceX, lightSourceY, lightSourceZ, fromX, fromY, fromZ;
 
-    Coordinate lightSource(500,500,500);
-    Coordinate viewPoint(200,200,200);
+    readEnvironment(argv[2], phongConstant, ambient, diffuse, specular, ambientIntensity, sourceIntensity, lightSourceX, lightSourceY, lightSourceZ, fromX, fromY, fromZ);
+
+    Coordinate lightSource(lightSourceX, lightSourceY, lightSourceZ);
+    Coordinate viewPoint(fromX, fromY, fromZ);
     double k = averageDistanceFromLightSource(polygons, lightSource);
 //cout << "Average distance: " << k << endl;
     for (vector<Polygon>::iterator itr = polygons.begin(); itr != polygons.end(); itr++) {
@@ -50,7 +47,7 @@ int main(int argc, char *argv[])
     }
     rasterize(PixelBuffer, polygons, viewport, 1);
 
-    writePolygons(argv[2], polygons);
+    //writePolygons(argv[2], polygons);
 
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_SINGLE);
