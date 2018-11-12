@@ -1,7 +1,7 @@
 all: draw
 
 clean:
-	rm -f draw filemanipulation.o polygon.o projection.o phong.o line.o pixel.o rasterize.o
+	rm -f draw filemanipulation.o polygon.o phong.o line.o pixel.o rasterize.o
 
 draw: main.cpp filemanipulation.o polygon.o phong.o line.o pixel.o rasterize.o
 	g++ main.cpp -lglut -lGL -o draw filemanipulation.o polygon.o phong.o line.o pixel.o rasterize.o
