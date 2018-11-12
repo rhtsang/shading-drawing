@@ -10,7 +10,9 @@
 #include "rasterize.h"
 
 float *PixelBuffer;
+vector<Polygon> polygons;
 int width, height;
+
 void display();
 
 int main(int argc, char *argv[])
@@ -19,16 +21,15 @@ int main(int argc, char *argv[])
 	// User interaction
 
     // viewport
-    // cout << "Enter the width of the viewing window: ";
-    // cin >> width;
-    // cout << "Enter the height of the viewing window: ";
-    // cin >> height;
-    width = height = 200;
+    cout << "Enter the width of the viewing window: ";
+    cin >> width;
+    cout << "Enter the height of the viewing window: ";
+    cin >> height;
+    //width = height = 200;
 	PixelBuffer = new float[width * height * 3];
-    Coordinate viewport(width, height, 0);
+
     // transformation prompt
 
-    vector<Polygon> polygons;
 	readPolygons(argv[1], polygons);
 
     int phongConstant;
@@ -45,7 +46,6 @@ int main(int argc, char *argv[])
         vector<double> intensities = phongIntensity(*itr, 4, 0.5, 0.25, 0.75, 5, 9,
                                 lightSource, viewPoint, k);
     }
-    rasterize(PixelBuffer, polygons, viewport, 1, 0);
 
     //writePolygons(argv[2], polygons);
 
@@ -71,9 +71,32 @@ void display()
 	glClear(GL_COLOR_BUFFER_BIT);
 	glLoadIdentity();
 
+    //delete(PixelBuffer);
+    //PixelBuffer = new float[width * height * 3];
+
+    bool halftone;
+    cout << "Would you like to enable half tone? Enter 0 for no or 1 for yes: ";
+    cin >> halftone;
+
+    int projection;
+    cout << "Which plane would you like to project to? Enter 0 for xy plane, 1 for yz plane, or 2 for xz plane: ";
+    cin >> projection;
+
+    Coordinate viewport(width, height, 0);
+    rasterize(PixelBuffer, polygons, viewport, projection, halftone);
+
 	//draws pixel on screen, width and height must match pixel buffer dimension
 	glDrawPixels(width, height, GL_RGB, GL_FLOAT, PixelBuffer);
 
+    for (int y = 0; y < viewport.y; y++) {
+        for (int x = 0; x < viewport.x; x++) {
+            int index = (y * viewport.x + x) * 3;
+            PixelBuffer[index] = PixelBuffer[index+1] = PixelBuffer[index+2] = 0;
+        }
+    }
+
 	//window refresh
+
 	glFlush();
+    glutPostRedisplay();
 }
