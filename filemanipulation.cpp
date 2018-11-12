@@ -88,30 +88,6 @@ void readPolygons(char* fileName, vector<Polygon>& polygons) {
 
 }
 
-void writePolygons(char* fileName, vector<Polygon>& polygons) {
-
-    ofstream outputFile(fileName);
-
-    outputFile << polygons.size() << "\n\n";
-
-    // write each Polygon to output file
-    for (vector<Polygon>::iterator itr = polygons.begin(); itr != polygons.end(); itr++) {
-
-        // write vertices info
-        outputFile << itr->numVertices << endl;
-        for (vector<Coordinate>::iterator itr2 = (itr->vertices).begin(); itr2 != (itr->vertices).end(); itr2++) {
-            outputFile << itr2->x << ' ' << itr2->y << ' ' << itr2->z << endl;
-        }
-
-        // write edges int_from
-        outputFile << itr->numTriangleFaces << endl;
-        for (vector<Triangle>::iterator itr2 = (itr->triangleFaces).begin(); itr2 != (itr->triangleFaces).end(); itr2++) {
-            outputFile << itr2->v1 << ' ' << itr2->v2 << ' ' << itr2->v3 << endl;
-        }
-    }
-
-}
-
 void readEnvironment(char* fileName, int& phongConstant, double& ambient, double& diffuse, double& specular, double& ambientIntensity, double& sourceIntensity, float& lightSourceX, float& lightSourceY, float& lightSourceZ, float& fromX, float& fromY, float& fromZ) {
 
     ifstream inputFile(fileName);

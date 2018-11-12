@@ -25,29 +25,29 @@ int main(int argc, char *argv[])
     cin >> width;
     cout << "Enter the height of the viewing window: ";
     cin >> height;
-    //width = height = 200;
 	PixelBuffer = new float[width * height * 3];
 
-    // transformation prompt
-
+    // read in polygon data from user input file
 	readPolygons(argv[1], polygons);
 
     int phongConstant;
     double ambient, diffuse, specular, ambientIntensity, sourceIntensity;
     float lightSourceX, lightSourceY, lightSourceZ, fromX, fromY, fromZ;
 
+    // read in environment data from user input file
     readEnvironment(argv[2], phongConstant, ambient, diffuse, specular, ambientIntensity, sourceIntensity, lightSourceX, lightSourceY, lightSourceZ, fromX, fromY, fromZ);
 
     Coordinate lightSource(lightSourceX, lightSourceY, lightSourceZ);
     Coordinate viewPoint(fromX, fromY, fromZ);
     double k = averageDistanceFromLightSource(polygons, lightSource);
 //cout << "Average distance: " << k << endl;
+
+    // calculate intensities at polygon vertices
     for (vector<Polygon>::iterator itr = polygons.begin(); itr != polygons.end(); itr++) {
         vector<double> intensities = phongIntensity(*itr, 4, 0.5, 0.25, 0.75, 5, 9,
                                 lightSource, viewPoint, k);
     }
 
-    //writePolygons(argv[2], polygons);
 
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_SINGLE);
@@ -71,9 +71,6 @@ void display()
 	glClear(GL_COLOR_BUFFER_BIT);
 	glLoadIdentity();
 
-    //delete(PixelBuffer);
-    //PixelBuffer = new float[width * height * 3];
-
     bool halftone;
     cout << "Would you like to enable half tone? Enter 0 for no or 1 for yes: ";
     cin >> halftone;
@@ -88,6 +85,7 @@ void display()
 	//draws pixel on screen, width and height must match pixel buffer dimension
 	glDrawPixels(width, height, GL_RGB, GL_FLOAT, PixelBuffer);
 
+    // clear the screen of pixels to prepare for next display
     for (int y = 0; y < viewport.y; y++) {
         for (int x = 0; x < viewport.x; x++) {
             int index = (y * viewport.x + x) * 3;

@@ -36,6 +36,7 @@ void dda(float* PixelBuffer, Coordinate start, Coordinate end, Coordinate viewpo
         Coordinate point(round(x), round(y), 0);
         double intensity = 0;
         if (start.y != end.y) {
+            // set intensities as lines are drawn
             intensity = ((end.y-point.y)/(end.y-start.y))*(start.intensity) + ((point.y-start.y)/(end.y-start.y))*(end.intensity);
             //cout << "Intensity at point (" << point.x << ", " << point.y << "): " << intensity << endl;
         }

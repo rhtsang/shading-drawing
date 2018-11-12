@@ -112,6 +112,8 @@ vector<double> phongIntensity(Polygon& polygon, int phongConstant, double ambien
         double reflectY = (-1*lightVectorY) + 2*(sumNormalX*lightVectorX + sumNormalY*lightVectorY + sumNormalZ*lightVectorZ)*sumNormalY;
         double reflectZ = (-1*lightVectorZ) + 2*(sumNormalX*lightVectorX + sumNormalY*lightVectorY + sumNormalZ*lightVectorZ)*sumNormalZ;
 
+        // do the math after finding all the components
+        
         double kI = ambient*ambientIntensity;
         double fractionThing = sourceIntensity/(viewVectorMagnitude + averageDistance);
         double LdotN = (lightVectorX*sumNormalX) + (lightVectorY*sumNormalY) + (lightVectorZ*sumNormalZ);
