@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
         vector<double> intensities = phongIntensity(*itr, 4, 0.5, 0.25, 0.75, 5, 9,
                                 lightSource, viewPoint, k);
     }
-    rasterize(PixelBuffer, polygons, viewport, 1);
+    rasterize(PixelBuffer, polygons, viewport, 1, 0);
 
     //writePolygons(argv[2], polygons);
 

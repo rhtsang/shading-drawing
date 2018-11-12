@@ -42,6 +42,49 @@ float minVertex(Face face, int dimension) {
     }
 }
 
+double averageIntensity(float* DrawBuffer, int x, int y, Coordinate viewport) {
+    float intensity = 0;
+
+    if (x-1 >= 0) {
+        if (y-1 >= 0) {
+            int index = ((y-1) * viewport.x + (x-1)) * 3;
+            intensity += DrawBuffer[index];
+        }
+        int index = ((y) * viewport.x + (x-1)) * 3;
+        intensity += DrawBuffer[index];
+        if (y+1 < viewport.y) {
+            int index = ((y+1) * viewport.x + (x-1)) * 3;
+            intensity += DrawBuffer[index];
+        }
+    }
+
+    if (y-1 >= 0) {
+        int index = ((y-1) * viewport.x + (x)) * 3;
+        intensity += DrawBuffer[index];
+    }
+    int index = ((y) * viewport.x + (x)) * 3;
+    intensity += DrawBuffer[index];
+    if (y+1 < viewport.y) {
+        int index = ((y+1) * viewport.x + (x)) * 3;
+        intensity += DrawBuffer[index];
+    }
+
+    if (x+1 < viewport.x) {
+        if (y-1 >= 0) {
+            int index = ((y-1) * viewport.x + (x+1)) * 3;
+            intensity += DrawBuffer[index];
+        }
+        int index = ((y) * viewport.x + (x+1)) * 3;
+        intensity += DrawBuffer[index];
+        if (y+1 < viewport.y) {
+            int index = ((y+1) * viewport.x + (x+1)) * 3;
+            intensity += DrawBuffer[index];
+        }
+    }
+    intensity /= 9.0f;
+    return intensity;
+}
+
 void bubbleSort(vector<Face>& faces, int dimension)
 {
    int i, j;
@@ -67,7 +110,7 @@ void bubbleSort(vector<Face>& faces, int dimension)
 
 // based on the solution described on https://piazza.com/class/jmz4kfexw6n6rc?cid=24
 // and endorsed on https://piazza.com/class/jmz4kfexw6n6rc?cid=51
-void rasterize(float* PixelBuffer, vector<Polygon> polygons, Coordinate viewport, int dimension) {
+void rasterize(float* PixelBuffer, vector<Polygon> polygons, Coordinate viewport, int dimension, bool halftone) {
 
     vector<Face> faces;
     for (vector<Polygon>::iterator itr = polygons.begin(); itr != polygons.end(); itr++) {
@@ -149,6 +192,7 @@ void rasterize(float* PixelBuffer, vector<Polygon> polygons, Coordinate viewport
             }
 
             // set pixels in between intersections
+            // normal shading, i.e. not half-toning
             for (int x = x_start; x <= x_end; x++) {
                 int left_index = (y * viewport.x + x_start) * 3;
                 int right_index = (y * viewport.x + x_end) * 3;
@@ -162,7 +206,16 @@ void rasterize(float* PixelBuffer, vector<Polygon> polygons, Coordinate viewport
                     setPixel(DrawBuffer, point, viewport, intensity);
                 }
             }
-        }
+
+//             // transform normal shading to half toning
+//             for (int y = 0; y < ((int) viewport.y/3)*3; y += 3) {
+//                 for (int x = 0; x < ((int) viewport.x/3)*3; x += 3) {
+//                     float intensity = averageIntensity(DrawBuffer, x, y, viewport);
+// if (intensity > 0)
+// cout << "Point (" << x << ", " << y << ") intensity: " << intensity << endl;
+//                 }
+//             }
+//         }
 
         // copy DrawBuffer to PixelBuffer
         for (int y = 0; y < viewport.y; y++) {
@@ -176,4 +229,49 @@ void rasterize(float* PixelBuffer, vector<Polygon> polygons, Coordinate viewport
             }
         }
 	}
+    if (halftone) {
+        // transform normal shading to half toning
+        for (int y = 0; y < ((int) viewport.y/3)*3; y += 3) {
+            for (int x = 0; x < ((int) viewport.x/3)*3; x += 3) {
+                float intensity = averageIntensity(PixelBuffer, x, y, viewport);
+    // if (intensity > 0)
+    //cout << "Point (" << x << ", " << y << ") intensity: " << intensity << endl;
+                for (int i = 0; i < floor(intensity*10); i++) {
+    //cout << floor(intensity*10) << endl;
+                    int index = rand() % 10;
+    //cout << "index: " << index << endl;
+    //fflush(stdout);
+                    int bufferIndex = 0;
+                    switch (index) {
+                        case 1: if (x-1 >= 0 && y+1 < viewport.y) bufferIndex = ((y+1) * viewport.x + (x-1)) * 3; break;
+                        case 2: if (y+1 < viewport.y) bufferIndex = ((y+1) * viewport.x + (x)) * 3; break;
+                        case 3: if (x+1 < viewport.x && y+1 < viewport.y) bufferIndex = ((y+1) * viewport.x + (x+1)) * 3; break;
+                        case 4: if (x-1 >= 0) bufferIndex = ((y) * viewport.x + (x-1)) * 3; break;
+                        case 5: bufferIndex = ((y) * viewport.x + (x)) * 3; break;
+                        case 6: if (x+1 < viewport.x) bufferIndex = ((y) * viewport.x + (x+1)) * 3; break;
+                        case 7: if (x-1 >= 0 && y-1 >= 0) bufferIndex = ((y-1) * viewport.x + (x-1)) * 3; break;
+                        case 8: if (y-1 >= 0) bufferIndex = ((y-1) * viewport.x + (x)) * 3; break;
+                        case 9: if (x+1 < viewport.x && y-1 >= 0) bufferIndex = ((y-1) * viewport.x + (x+1)) * 3; break;
+                        default: break;
+                    }
+                    //PixelBuffer[bufferIndex] = PixelBuffer[bufferIndex+1] = PixelBuffer[bufferIndex+2] = 1;
+    //cout << "bufferIndex: " << bufferIndex << endl;
+    //fflush(stdout);
+                    if (PixelBuffer[bufferIndex] == 1.0f) i=i;
+                    else PixelBuffer[bufferIndex] = PixelBuffer[bufferIndex+1] = PixelBuffer[bufferIndex+2] = 1;
+                }
+            }
+        }
+
+        for (int y = 0; y < viewport.y; y++) {
+            for (int x = 0; x < viewport.x; x++) {
+                int index = (y * viewport.x + x) * 3;
+                if (PixelBuffer[index] != 1)
+                    PixelBuffer[index] = PixelBuffer[index+1] = PixelBuffer[index+2] = 0;
+    //cout << "Clearing pixel (" << x << ", " << y << ")" << endl;
+            }
+        }
+    }
+}
+
 }
